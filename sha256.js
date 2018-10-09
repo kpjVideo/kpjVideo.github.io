@@ -175,7 +175,7 @@ async function messageScheduler( str ){
 	for( var chunk = 0; chunk < numBlocks; chunk++ ){
 		var M = [];
 
-		$(".mSch").text("Message Scheduler (" + chunk + "/" + numBlocks + ")");
+		$(".mSch").text("Message Scheduler (" + ( chunk + 1 ) + "/" + numBlocks + ")");
 		// Define our 64-entry message schedule array (32 bit words)
 		for( var i = ( 512 * chunk ); i < ( 512 * ( chunk + 1 ) ); i += 32 ){
 			M.push(x.substring( i, i + 32 ));

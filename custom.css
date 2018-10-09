@@ -1,6 +1,10 @@
-html{
+html {
 	background: #222222;
 	background-color: #222222;
+}
+
+code {
+	vertical-align: text-bottom;
 }
 
 .varA {
@@ -68,7 +72,7 @@ html{
 	padding-left: 10px;
 }
 
-.blinking{
+.blinking {
 	opacity: 1;
 	animation-name: fadeInOpacity;
 	animation-iteration-count: 1;
