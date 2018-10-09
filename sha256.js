@@ -186,7 +186,7 @@ async function messageScheduler( str ){
 
 		// Copy chunk into first 16 words [0..15] of the message scheduler array
 		for( var i = 0; i < 16; i++ ){
-			changeText( '.iter', '0x' + pad( i.toString( 16 ).toUpperCase(), 8 ) );
+			changeText( '.iter', '0x' + pad( i.toString( 16 ).toUpperCase(), 2 ) );
 			await sleep(getSpeed());
 
 			n = parseInt( M[ i ], 2 );
@@ -199,7 +199,7 @@ async function messageScheduler( str ){
 
 		// Remaining [16..63] all defined on page 22 of FIPS 180-4
 		for( var i = 16; i < 64; i++ ){
-			changeText( '.iter', '0x' + pad( i.toString( 16 ).toUpperCase(), 8 ) );
+			changeText( '.iter', '0x' + pad( i.toString( 16 ).toUpperCase(), 2 ) );
 			await sleep(getSpeed());
 
 			// run littleSigma0 on word 15 before current
@@ -209,7 +209,7 @@ async function messageScheduler( str ){
 
 			// run littleSigma1 on word 2 before current
 			var s1 = σ1( W[ i - 2 ] ) >>> 0;
-			changeText( ".s1_data", '0x' + pad( s0.toString( 16 ).toUpperCase(), 8 ) );
+			changeText( ".s1_data", '0x' + pad( s1.toString( 16 ).toUpperCase(), 8 ) );
 			await sleep(getSpeed());
 
 			// Sum word from 16 before current, littleSigma0, word from 7 before current, and littleSigma1
@@ -248,7 +248,7 @@ async function messageScheduler( str ){
 		await sleep(getSpeed());
 
 		for( var t = 0; t < 64; t++ ){
-			changeText( '.iter', '0x' + pad( t.toString( 16 ).toUpperCase(), 8 ) );
+			changeText( '.iter', '0x' + pad( t.toString( 16 ).toUpperCase(), 2 ) );
 			await sleep(getSpeed());
 
 			var S1 = Σ1( E ) >>> 0;
