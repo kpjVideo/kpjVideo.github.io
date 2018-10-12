@@ -183,7 +183,7 @@ async function messageScheduler( str, hex ){
 
 			// run littleSigma1 on word 2 before current
 			var s1 = σ1( W[ i - 2 ] ) >>> 0;
-			changeText( '.s1_data', '0x' + pad( s0.toString( 16 ).toUpperCase(), 8 ) );
+			changeText( '.s1_data', '0x' + pad( s1.toString( 16 ).toUpperCase(), 8 ) );
 			await sleep(getSpeed());
 
 			// Sum word from 16 before current, littleSigma0, word from 7 before current, and littleSigma1
