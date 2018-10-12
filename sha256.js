@@ -1,19 +1,12 @@
-function changeText( obj, text ){
-	$(obj).text( text );
-	$(obj).removeClass( "blinking" );
-	setTimeout(function(){
-		$(obj).addClass( "blinking" );
-	},1);
-}
+﻿/*
+	-----------------------------------
+	------------- SHA 256 -------------
+	-----------------------------------
+*/
 
-function getSpeed( ){
-	return( 50 - $("#sSpeed").val() );
-}
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
+/*
+	K constants (FIPS.180-4)
+*/
 const K = [
 	0x428A2F98, 0x71374491, 0xB5C0FBCF, 0xE9B5DBA5, 0x3956C25B, 0x59F111F1, 0x923F82A4, 0xAB1C5ED5,
 	0xD807AA98, 0x12835B01, 0x243185BE, 0x550C7DC3, 0x72BE5D74, 0x80DEB1FE, 0x9BDC06A7, 0xC19BF174,
@@ -94,40 +87,11 @@ function σ1( x ){
 }
 
 /*
-	padLength( $x )
-	Description: Returns number of zeros required to make string a length in a multiple of 512
-*/
-function padLength( x, numBlocks ){
-	var k = ( 512 * ( numBlocks - 1 ) + 447 - ( 8 * x.length ) );
-
-	return k;
-}
-
-function hex2bin( hex ){
-	return( parseInt( hex, 16 ).toString( 2 ) ).padStart( 8, '0' );
-}
-
-function dec2bin( dec ){
-	return( dec >>> 0 ).toString( 2 );
-}
-
-function pad(n, width, z) {
-	z = z || '0';
-	n = n + '';
-	return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
-}
-
-function toPaddedHexString(num, len) {
-    str = num.toString(16);
-    return "0".repeat(len - str.length) + str;
-}
-
-/*
 	messageBinary( $str )
 	Description: Returns the binary representation of our string input
 */
 function messageBinary( str ){
-	var msg = "";
+	var msg = '';
 
 	for( var i = 0; i < str.length; i++ ){
 		var hex = str[i].charCodeAt(0).toString(16);
@@ -141,13 +105,23 @@ function messageBinary( str ){
 	messageStruct( $str )
 	Description: Returns the padded out binary (string in binary + 1 seperator + padding zeros + 64 bit length of binary before seperator)
 */
-function messageStruct( str, numBlocks ){
+function messageStruct( str, hex ){
 	var m = messageBinary( str );
-	var l = m.length;
-	m += "1";
 
-	for( var i = 0; i < padLength( str, numBlocks ); i++ ){
-		m += "0";
+	if( hex ){
+		m = "";
+
+		for( var i = 0; i < str.length; i += 8 ){
+			// Pad for constant 32 bit word
+			m += pad( hex2bin( str.substring( i, i + 8 ) ), 32 );
+		}
+	}
+
+	var l = m.length;
+	m += '1';
+
+	while( ( 447 - m.length ) % 512 != 0 ){
+		m += '0';
 	}
 
 	m += pad( dec2bin( l ), 64 );
@@ -156,13 +130,13 @@ function messageStruct( str, numBlocks ){
 }
 
 /*
-	messageScheduler( $str, &$h )
+	messageScheduler( $str )
 	bit mask is used several times to prevent integer overflow on systems higher than 32 bits
 */
-async function messageScheduler( str ){
+async function messageScheduler( str, hex ){
 	var hash 		= 0x00000000;
-	var numBlocks 	= Math.floor( 1 + ( ( ( 8 * str.length ) + 16 + 64 ) / 512 ) );
-	var x 			= messageStruct( str, numBlocks );
+	var x 			= messageStruct( str, hex );
+	var numBlocks 	= Math.ceil( x.length / 512 );
 
 	// 8 working variable constants (fractional portion of square root of first 8 prime numbers)
 	var hInit = [
@@ -175,7 +149,7 @@ async function messageScheduler( str ){
 	for( var chunk = 0; chunk < numBlocks; chunk++ ){
 		var M = [];
 
-		$(".mSch").text("Message Scheduler (" + ( chunk + 1 ) + "/" + numBlocks + ")");
+		$('.mSch').text('Message Scheduler (' + ( chunk + 1 ) + '/' + numBlocks + ')');
 		// Define our 64-entry message schedule array (32 bit words)
 		for( var i = ( 512 * chunk ); i < ( 512 * ( chunk + 1 ) ); i += 32 ){
 			M.push(x.substring( i, i + 32 ));
@@ -192,7 +166,7 @@ async function messageScheduler( str ){
 			n = parseInt( M[ i ], 2 );
 			W[i] = n;
 
-			var t = ".m" + i;
+			var t = '.m' + i;
 			changeText( t, '0x' + pad( n.toString( 16 ).toUpperCase(), 8 ) );
 			await sleep(getSpeed());
 		}
@@ -204,19 +178,19 @@ async function messageScheduler( str ){
 
 			// run littleSigma0 on word 15 before current
 			var s0 = σ0( W[ i - 15 ] ) >>> 0;
-			changeText( ".s0_data", '0x' + pad( s0.toString( 16 ).toUpperCase(), 8 ) );
+			changeText( '.s0_data', '0x' + pad( s0.toString( 16 ).toUpperCase(), 8 ) );
 			await sleep(getSpeed());
 
 			// run littleSigma1 on word 2 before current
 			var s1 = σ1( W[ i - 2 ] ) >>> 0;
-			changeText( ".s1_data", '0x' + pad( s1.toString( 16 ).toUpperCase(), 8 ) );
+			changeText( '.s1_data', '0x' + pad( s0.toString( 16 ).toUpperCase(), 8 ) );
 			await sleep(getSpeed());
 
 			// Sum word from 16 before current, littleSigma0, word from 7 before current, and littleSigma1
 			var sum = ( W[ i - 16 ] + s0 + W[ i - 7 ] + s1 ) >>> 0;
 			W[ i ] = sum;
 			
-			var t = ".m" + i;
+			var t = '.m' + i;
 			changeText( t, '0x' + pad( sum.toString( 16 ).toUpperCase(), 8 ) );
 			await sleep(getSpeed());
 		}
@@ -324,12 +298,15 @@ async function messageScheduler( str ){
 		hInit[7] += (H) >>> 0;
 
 		// concatenate our 8 hash pieces into final hash
-		var d = "";  //= sprintf( "%08X%08X%08X%08X%08X%08X%08X%08X", hInit[0], hInit[1], hInit[2], hInit[3], hInit[4], hInit[5], hInit[6], hInit[7] );
+		var d = '';
+
 		for( var i = 0; i < 8; i++ ){
 			var res = hInit[ i ] >>> 0;
-			changeText( '.res' + i, '0x' + pad( res.toString( 16 ).toUpperCase(), 8 ) );
+			var p = pad( res.toString( 16 ).toUpperCase(), 8 );
+
+			changeText( '.res' + i, '0x' + p );
 			await sleep(getSpeed());
-			d += res.toString( 16 ).toUpperCase();
+			d += p;
 		}
 
 		// Final hash assignment
@@ -338,7 +315,7 @@ async function messageScheduler( str ){
 
 	changeText( '.finalHash', hash );
 	await sleep(getSpeed());
-	$("#start").attr("disabled", false);
+	$('#start').attr('disabled', false);
 
 	// last hash/final iteration is the input's hash
 	return hash;

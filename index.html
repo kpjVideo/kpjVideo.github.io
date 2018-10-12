@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=0.2">
@@ -37,22 +37,18 @@
 		<div class="row">
 			<div class="col-lg-8">
 				<label for="data">Enter Input Data:</label>
-				<textarea class="form-control inputData" id="data" rows="6"></textarea>
+				<textarea class="form-control inputData" id="data" rows="5"></textarea>
 			</div>
 			<div class="col-lg-4" style="white-space: nowrap;">
 				<label for="radio">Data Type:</label>
 				<br>
 				<div class="custom-control custom-radio">
-					<input type="radio" class="custom-control-input" id="dataBinary" name="dataTypes">
+					<input type="radio" class="custom-control-input" id="dataBinary" name="dataTypes" checked>
 					<label class="custom-control-label" for="dataBinary">Binary (string)</label>
 				</div>
 				<div class="custom-control custom-radio">
 					<input type="radio" class="custom-control-input" id="dataHex" name="dataTypes">
 					<label class="custom-control-label" for="dataHex">Hexadecimal (base16)</label>
-				</div>
-				<div class="custom-control custom-radio">
-					<input type="radio" class="custom-control-input" id="dataDec" name="dataTypes">
-					<label class="custom-control-label" for="dataDec">Decimal (base10)</label>
 				</div>
 				<br>
 				<label for="range">Clock Speed:</label>
@@ -62,7 +58,11 @@
 				<!--<button type="button" class="btn btn-mdb-color" id="reset" style="display: inline-block;width: 48%">Reset</
 				button>-->
 			</div>
-			<button type="button" class="btn btn-mdb-color" id="start" style="margin-top:20px;margin-bottom: 0px;width: 100%">Start</button>
+		</div>
+		<div class="row">
+			<div class="col-lg-12">
+				<button type="button" class="btn btn-mdb-color" id="start" style="margin-top:20px;margin-bottom: 0px;margin-left:0;margin-right: 0;width: 100%">Start</button>
+			</div>
 		</div>
 	</div>
 	<div class="jumbotron" style="display: inline-table;margin-right:0px;">
@@ -466,6 +466,7 @@
 		</div>
 	</div>
 
+	<script type="text/javascript" src="main.js"></script>
 	<script type="text/javascript" src="sha256.js"></script>
 	<script type="text/javascript">
 
@@ -474,7 +475,14 @@
 			$("#start").attr("disabled", true);
 			changeText( '.finalHash', "" );
 
-			messageScheduler( $(".inputData").val() );
+			var h = false;
+
+			if( $("#dataHex").is(":checked") ){
+				h = true;
+			}
+
+			messageScheduler( $(".inputData").val(), h );
+
 			/*$( ".textBlock" ).each(function( index ) {
 				var obj = $(this);
 				obj.removeClass( "blinking" );
