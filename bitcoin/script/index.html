@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- jQuery -->
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+
+	<!-- Bootstrap -->
+	<link rel="stylesheet" href="https://bootswatch.com/4/darkly/bootstrap.min.css">
+
+	<!-- Meta -->
+	<title>Bitcoin Script Interpreter/Stack Simulator</title>
+
+	<!-- Our custom hacky stuff -->
+	<script type="text/javascript" src="script_.js"></script>
+	<script type="text/javascript" src="script_error.js"></script>
+	<script type="text/javascript" src="interpreter.js"></script>
+
+	<!-- Cryptographic Funcs -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/core.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/sha256.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/ripemd160.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/sha1.js"></script>
+	
+	<!-- CodeMirror for visual IDE -->
+	<script src="js/codemirror.js"></script>
+	<script src="js/hint.js"></script>
+	<script src="mode/simple.js"></script>
+	<script src="mode/script.js"></script>
+
+	<!-- CSS -->
+	<link rel="stylesheet" href="css/codemirror.css">
+	<link rel="stylesheet" href="css/monokai.css">
+	<link rel="stylesheet" href="css/custom.css">
+</head>
+<body>
+	<!-- Navbar -->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-light">
+		<div class="collapse navbar-collapse" id="navbarText">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item active">
+					<img class="logo" src="https://en.bitcoin.it/w/images/en/2/29/BC_Logo_.png">
+					<span class="navbar-brand">Bitcoin Script Interpreter & Stack Emulator</span>
+				</li>
+			</ul>
+
+			<!-- Testing warning -->
+			<span class="navbar-text">
+				FOR TESTING ONLY -- MANY OPCODES ARE DISABLED UNTIL THEY CAN BE IMPLEMENTED!
+			</span>
+		</div>
+	</nav>
+
+	<br>
+
+	<!-- Script container -->
+	<div class="container">
+		<h3>Script</h3>
+		<textarea class="codemirror-textarea" id="script"></textarea>
+	</div>
+
+	<br>
+
+	<!-- Assembly container -->
+	<div class="container">
+		<h3>Assembly (ASM)</h3>
+		<textarea class="codemirror-textarea" id="asm"></textarea>
+		<br>
+		<button class="btn btn-info" type="submit" id="asmConv">Convert Assembly + Simulate</button>
+	</div>
+
+	<br>
+	<br>
+
+	<!-- Stack simulation container -->
+	<div class="container">
+		<div class="row">
+			<div class="col-sm">
+				<h3 style="display: inline-block;margin-bottom: 0;">Stack Simulation</h3>
+				<button class="btn btn-info" type="submit" id="stackAnim">
+					<img src="img/play.png" class="playButton">
+				</button>
+				<div class="stack_vis" id="stack_vis">
+					<h5 class='stackItem'>Empty</h5>
+				</div>
+			</div>
+			<div class="col-sm">
+				<h3 style="display: inline-block;margin-bottom: 0;">OP_ execution</h3>
+				<div class="stack_vis" id="stack_vis_log">
+					<h5 class='stackItem'>Empty</h5>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript" src="custom.js"></script>
+</body>
+</html>

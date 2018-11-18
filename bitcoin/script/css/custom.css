@@ -1,0 +1,51 @@
+.stack_vis {
+	display: block;
+	width: 100%;
+	height: auto;
+	margin-top: 10px;
+}
+
+#asmConv {
+	width: 20%;
+	float: right;
+}
+
+#stackAnim {
+	display: inline-block;
+	float: right;
+}
+
+h5 {
+	text-align: center;
+}
+
+tr {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.col-sm {
+	max-width: 50%;
+}
+
+.container {
+	max-width: 75%;
+}
+
+.stackItem {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	background-color: #272822;
+}
+
+.logo {
+	margin-right: 20px;
+	width: 50px;
+	height: 50px;
+}
+
+.playButton {
+	max-width: 16px;
+	max-height: 16px;
+	filter: invert(100%);
+}
